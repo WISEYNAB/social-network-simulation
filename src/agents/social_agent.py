@@ -34,7 +34,7 @@ class SocialAgent:
         name: str,
         archetype: str,
         persona: Dict[str, Any],
-        model_name: str = "MFDoom/deepseek-r1-tool-calling:latest",
+        model_name: str = "llama3.1:latest",
         temperature: float = 0.8
     ):
         self.name = name
@@ -99,7 +99,7 @@ CRITICAL INSTRUCTIONS:
     def generate_post(
         self,
         prompt: str,
-        context: Optional[List[Dict[str, str]]] = None,
+        context: Optional[List[Dict[str, Any]]] = None,
         max_tokens: int = 200
     ) -> str:
         """
@@ -107,7 +107,7 @@ CRITICAL INSTRUCTIONS:
         
         Args:
             prompt: The discussion topic or question
-            context: Recent posts from other agents for context
+            context: Recent posts and comments from other agents for context
             max_tokens: Maximum length of the post
             
         Returns:
@@ -118,12 +118,25 @@ CRITICAL INSTRUCTIONS:
         if not self._should_post():
             return None
         
-        # Build context string
+        # Build context string — handles both posts AND comments
         context_str = ""
         if context:
             context_str = "\n\nRECENT COMMUNITY POSTS:\n"
-            for post_dict in context[-5:]:  # Last 5 posts
-                context_str += f"- {post_dict['author']}: {post_dict['content']}\n"
+            for msg in context[-5:]:
+                msg_type = msg.get("type", "post")
+
+                if msg_type == "post":
+                    author  = msg.get("author", "Someone")
+                    content = msg.get("content", "")
+                    if content:
+                        context_str += f"- {author}: {content}\n"
+
+                elif msg_type == "comment":
+                    commenter = msg.get("commenter", "Someone")
+                    target    = msg.get("target_author", "")
+                    comment   = msg.get("comment", "")
+                    if comment:
+                        context_str += f"- {commenter} (replying to {target}): {comment}\n"
         
         system_prompt = self._build_system_prompt()
         
@@ -216,15 +229,18 @@ Your comment (or say 'SKIP' if you wouldn't engage):"""
     def _should_post(self) -> bool:
         """Determine if agent should post based on engagement pattern"""
         
-        # Different posting probabilities based on persona
-        if "very low" in self.persona.engagement_pattern.lower():
-            return random.random() < 0.3  # 30% chance
-        elif "low" in self.persona.engagement_pattern.lower():
-            return random.random() < 0.6  # 60% chance
-        elif "high" in self.persona.engagement_pattern.lower():
-            return random.random() < 0.95  # 95% chance
+        pattern = self.persona.engagement_pattern.lower()
+
+        if "very low" in pattern:
+            return random.random() < 0.3
+        elif "low" in pattern:
+            return random.random() < 0.6
+        elif "very high" in pattern:
+            return random.random() < 0.95
+        elif "high" in pattern:
+            return random.random() < 0.85
         else:
-            return random.random() < 0.8  # 80% chance (moderate)
+            return random.random() < 0.8  # moderate default
     
     def _should_engage(self, post_content: str) -> bool:
         """Determine if agent should comment on a post"""
@@ -233,19 +249,22 @@ Your comment (or say 'SKIP' if you wouldn't engage):"""
         post_lower = post_content.lower()
         relevant = any(topic.lower() in post_lower for topic in self.persona.topics)
         
-        # Different engagement probabilities
-        if "very high" in self.persona.engagement_pattern.lower():
+        pattern = self.persona.engagement_pattern.lower()
+
+        if "very high" in pattern:
             base_prob = 0.8
-        elif "high" in self.persona.engagement_pattern.lower():
+        elif "high" in pattern:
             base_prob = 0.6
-        elif "low" in self.persona.engagement_pattern.lower():
-            base_prob = 0.2
+        elif "very low" in pattern:
+            base_prob = 0.15
+        elif "low" in pattern:
+            base_prob = 0.3
         else:
             base_prob = 0.4
         
         # Boost probability if topic is relevant
         if relevant:
-            base_prob = min(base_prob + 0.3, 0.95)
+            base_prob = min(base_prob + 0.2, 0.95)
         
         return random.random() < base_prob
     
@@ -277,8 +296,17 @@ Your comment (or say 'SKIP' if you wouldn't engage):"""
         
         # Simple agreement/disagreement detection
         comment_lower = comment.lower()
-        agreement_keywords = ["agree", "exactly", "yes", "great point", "love this", "you're right", "100%"]
-        disagreement_keywords = ["disagree", "actually", "but", "however", "not sure", "wrong", "counterpoint"]
+
+        agreement_keywords = [
+            "agree", "exactly", "yes", "great point", "love this",
+            "you're right", "100%", "absolutely", "totally", "same",
+            "well said", "couldn't agree more", "spot on", "true"
+        ]
+        disagreement_keywords = [
+            "disagree", "actually", "but", "however", "not sure",
+            "wrong", "counterpoint", "i don't think", "doubt",
+            "not quite", "misleading", "oversimplified", "flawed"
+        ]
         
         if any(kw in comment_lower for kw in agreement_keywords):
             self.agreements += 1
