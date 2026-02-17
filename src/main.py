@@ -1,127 +1,110 @@
 """
 Social Network Simulation - Main Entry Point
+Step 2: GroupChat with multi-round discussions
 """
 
 import sys
+import yaml
 from pathlib import Path
 
-# Get the project root directory (parent of src)
+# Setup paths
 project_root = Path(__file__).parent.parent
 src_dir = Path(__file__).parent
 
-# Add to Python path
 sys.path.insert(0, str(project_root))
 sys.path.insert(0, str(src_dir))
 
 from agents.persona_loader import create_agents, display_agent_summary
-from agents.social_agent import SocialAgent
+from groupchat.group_chat import GroupChat
+from utils.logger import ConversationLogger
 
 
-def test_single_agent(agent: SocialAgent, prompt: str):
-    """Test a single agent's posting capability"""
-    print(f"\n{'='*80}")
-    print(f"Testing: {agent.name}")
-    print(f"{'='*80}")
-    print(f"Prompt: {prompt}\n")
-    
-    post = agent.generate_post(prompt)
-    
-    if post:
-        print(f"{agent.name}: {post}")
-    else:
-        print(f"{agent.name}: [chose not to post]")
-    
-    print(f"{'='*80}\n")
+def load_topics(topics_path: str) -> list:
+    """Load discussion topics from YAML file"""
+    with open(topics_path, 'r', encoding='utf-8') as f:
+        data = yaml.safe_load(f)
 
-
-def test_interaction(agent1: SocialAgent, agent2: SocialAgent, prompt: str):
-    """Test two agents interacting"""
-    print(f"\n{'='*80}")
-    print(f"Testing Interaction: {agent1.name} and {agent2.name}")
-    print(f"{'='*80}")
-    print(f"Prompt: {prompt}\n")
-    
-    # Agent 1 posts
-    post1 = agent1.generate_post(prompt)
-    if post1:
-        print(f"{agent1.name}: {post1}\n")
-        
-        # Agent 2 comments
-        comment = agent2.generate_comment(post1, agent1.name)
-        if comment:
-            print(f"  ↳ {agent2.name}: {comment}")
-        else:
-            print(f"  ↳ {agent2.name}: [chose not to engage]")
-    else:
-        print(f"{agent1.name}: [chose not to post]")
-    
-    print(f"{'='*80}\n")
+    # Convert YAML format to list format
+    topics = []
+    for key, value in data['topics'].items():
+        topics.append({
+            "text": value["text"],
+            "type": value["type"]
+        })
+    return topics
 
 
 def main():
-    """Main function to initialize and test agents"""
-    
+    """Main simulation runner"""
+
     print("\n" + "🚀 " * 20)
-    print("SOCIAL NETWORK SIMULATION - AGENT INITIALIZATION")
+    print("SOCIAL NETWORK SIMULATION - STEP 2: GROUP DISCUSSIONS")
     print("🚀 " * 20 + "\n")
-    
-    # FIXED: Build absolute path to config file
-    config_path = project_root / "config" / "agents.yaml"
-    
-    print(f"Looking for config at: {config_path}")
-    print(f"Config exists: {config_path.exists()}\n")
-    
-    if not config_path.exists():
-        print("❌ ERROR: Config file not found!")
-        print(f"Expected location: {config_path}")
-        print("\nPlease create config/agents.yaml in your project root.")
-        return
-    
-    # Create all agents
+
+    # ── LOAD CONFIG ───────────────────────────────────────────────────
+    config_path  = project_root / "config" / "agents.yaml"
+    topics_path  = project_root / "config" / "topics.yaml"
+    data_dir     = project_root / "data" / "conversations"
+
+    # Verify files exist
+    for path in [config_path, topics_path]:
+        if not path.exists():
+            print(f"❌ File not found: {path}")
+            return
+
+    # ── CREATE AGENTS ─────────────────────────────────────────────────
     agents = create_agents(
         config_path=str(config_path),
         model_name="llama3.1:latest",
         temperature=0.8
     )
-    
-    # Display agent summary
+
     display_agent_summary(agents)
-    
-    # Test prompts
-    test_prompts = [
-        "What's your take on the future of AI?",
-        "Share something you're passionate about",
-        "What's the biggest challenge in your field right now?"
-    ]
-    
-    # Test individual agents
-    print("\n" + "🧪 " * 20)
-    print("TESTING INDIVIDUAL AGENT POSTS")
-    print("🧪 " * 20)
-    
-    # Test a few different personas
-    test_agents = [agents[0], agents[1], agents[3], agents[5]]
-    
-    for agent in test_agents:
-        test_single_agent(agent, test_prompts[0])
-    
-    # Test interactions
+
+    # ── LOAD TOPICS ───────────────────────────────────────────────────
+    topics = load_topics(str(topics_path))
+    print(f"\n📋 Loaded {len(topics)} discussion topics")
+    for i, t in enumerate(topics, 1):
+        print(f"   Round {i}: [{t['type'].upper()}] {t['text'][:60]}...")
+
+    # ── SETUP LOGGER ──────────────────────────────────────────────────
+    logger = ConversationLogger(log_dir=str(data_dir))
+
+    # ── CREATE GROUPCHAT ──────────────────────────────────────────────
+    groupchat = GroupChat(
+        agents=agents,
+        chat_name="Initial Mixed Community",
+        logger=logger
+    )
+
+    # ── RUN SIMULATION ────────────────────────────────────────────────
     print("\n" + "💬 " * 20)
-    print("TESTING AGENT INTERACTIONS")
+    print("STARTING GROUP DISCUSSION SIMULATION")
     print("💬 " * 20)
-    
-    # Test some interesting pairings
-    test_interaction(agents[0], agents[5], test_prompts[1])
-    test_interaction(agents[1], agents[4], test_prompts[2])
-    
-    # Display stats
+
+    results = groupchat.run_multiple_rounds(
+        topics=topics,
+        enable_comments=True
+    )
+
+    # ── PRINT INTERACTION DATA ────────────────────────────────────────
     print("\n" + "📊 " * 20)
-    print("AGENT STATISTICS")
+    print("FINAL AGENT STATISTICS")
     print("📊 " * 20 + "\n")
-    
+
     for agent in agents:
         stats = agent.get_stats()
-        print(f"{stats['name']}: {stats['total_posts']} posts, {stats['total_comments']} comments")
+        print(f"\n{stats['name']}:")
+        print(f"  Posts      : {stats['total_posts']}")
+        print(f"  Comments   : {stats['total_comments']}")
+        print(f"  Agreements : {stats['agreements']}")
+        print(f"  Disagreements: {stats['disagreements']}")
+        if stats['topics_mentioned']:
+            print(f"  Topics     : {stats['topics_mentioned']}")
+
+    print("\n✅ Step 2 Complete!")
+    print("📁 Check data/conversations/ for saved logs")
+    print("🔜 Next step: Similarity matrix calculation")
 
 
 if __name__ == "__main__":

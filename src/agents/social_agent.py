@@ -34,7 +34,7 @@ class SocialAgent:
         name: str,
         archetype: str,
         persona: Dict[str, Any],
-        model_name: str = "llama3.1:latest",
+        model_name: str = "MFDoom/deepseek-r1-tool-calling:latest",
         temperature: float = 0.8
     ):
         self.name = name

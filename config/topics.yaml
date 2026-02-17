@@ -1,0 +1,25 @@
+topics:
+  round_1:
+    text: "What's your take on the future of AI and how it will change our lives?"
+    type: "technical"
+    tags: ["AI", "technology", "future"]
+
+  round_2:
+    text: "What does success mean to you, and how do you measure it?"
+    type: "values"
+    tags: ["success", "mindset", "personal growth"]
+
+  round_3:
+    text: "Hot take: Is hustle culture doing more harm than good?"
+    type: "controversial"
+    tags: ["work culture", "productivity", "mental health"]
+
+  round_4:
+    text: "Share something creative or interesting you've been working on lately"
+    type: "creative"
+    tags: ["creativity", "projects", "sharing"]
+
+  round_5:
+    text: "What's the biggest problem in the world right now and how would you solve it?"
+    type: "problem_solving"
+    tags: ["global issues", "solutions", "critical thinking"]
