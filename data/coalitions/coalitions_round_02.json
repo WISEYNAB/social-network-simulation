@@ -1,0 +1,23 @@
+{
+  "round": 2,
+  "method": "threshold",
+  "num_coalitions": 2,
+  "coalitions": [
+    [
+      "TechAnalystAlex",
+      "CreativeStoryteller_Sam",
+      "EmpathyAdvocate_Riley",
+      "TrendSpotter_Avery",
+      "BusinessGuru_Pat",
+      "AcademicScholar_Dr_Lee"
+    ],
+    [
+      "MemeLord_Casey",
+      "SkepticalDebater_Morgan"
+    ]
+  ],
+  "coalition_sizes": [
+    6,
+    2
+  ]
+}
