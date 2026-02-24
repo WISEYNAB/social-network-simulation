@@ -240,3 +240,7 @@ class GroupChat:
 
     def get_similarity_matrix(self) -> SimilarityMatrix:
         return self.similarity_matrix
+    
+    def get_agents_by_names(self, agent_names: List[str]) -> List[SocialAgent]:
+        """Return agent objects for a given list of agent names"""
+        return [agent for agent in self.agents if agent.name in agent_names]
