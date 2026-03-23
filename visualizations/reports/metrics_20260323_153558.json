@@ -1,0 +1,75 @@
+{
+  "total_rounds": 5,
+  "total_agents": 2,
+  "agent_names": [
+    "CreativeStoryteller_Sam",
+    "SkepticalDebater_Morgan"
+  ],
+  "coalition_events": 2,
+  "per_round_metrics": {
+    "1": {
+      "avg_similarity": 0.6433363366555573,
+      "max_similarity": 0.6433363366555573,
+      "min_similarity": 0.6433363366555573
+    },
+    "2": {
+      "avg_similarity": 0.4801219501335175,
+      "max_similarity": 0.7207506471837372,
+      "min_similarity": 0.2262754011394315,
+      "num_coalitions": 2,
+      "coalition_sizes": [
+        6,
+        2
+      ],
+      "avg_cohesion": 1.0,
+      "min_cohesion": 1.0,
+      "max_cohesion": 1.0,
+      "modularity": 0.015431747384371516
+    },
+    "3": {
+      "avg_similarity": 0.48191207359030763,
+      "max_similarity": 0.7207506471837372,
+      "min_similarity": 0.2262754011394315
+    },
+    "4": {
+      "avg_similarity": 0.47252935754092495,
+      "max_similarity": 0.6929728694059594,
+      "min_similarity": 0.2262754011394315,
+      "num_coalitions": 2,
+      "coalition_sizes": [
+        5,
+        2
+      ],
+      "avg_cohesion": 0.7184036718152751,
+      "min_cohesion": 0.43680734363055024,
+      "max_cohesion": 1.0,
+      "modularity": 0.011229127112326397
+    },
+    "5": {
+      "avg_similarity": 0.4787639254421595,
+      "max_similarity": 0.7006928017727422,
+      "min_similarity": 0.2262754011394315
+    }
+  },
+  "churn_analysis": [
+    {
+      "from_round": 2,
+      "to_round": 4,
+      "churn_rate": 0.25,
+      "num_migrations": 2,
+      "migrations": [
+        {
+          "agent": "CreativeStoryteller_Sam",
+          "from_coalition": 0,
+          "to_coalition": 1
+        },
+        {
+          "agent": "MemeLord_Casey",
+          "from_coalition": 1,
+          "to_coalition": -1
+        }
+      ]
+    }
+  ],
+  "avg_churn_rate": 0.25
+}
