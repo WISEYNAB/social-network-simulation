@@ -1,0 +1,63 @@
+{
+  "total_rounds": 5,
+  "total_agents": 3,
+  "agent_names": [
+    "TechAnalystAlex",
+    "CreativeStoryteller_Sam",
+    "EmpathyAdvocate_Riley"
+  ],
+  "coalition_events": 2,
+  "per_round_metrics": {
+    "1": {
+      "avg_similarity": 0.47500026170786414,
+      "max_similarity": 0.7011677588984673,
+      "min_similarity": 0.3539627975273046
+    },
+    "2": {
+      "avg_similarity": 0.5206786086762778,
+      "max_similarity": 0.5818912525233693,
+      "min_similarity": 0.3962924653615379,
+      "num_coalitions": 1,
+      "coalition_sizes": [
+        3
+      ],
+      "avg_cohesion": 0.5028069190644079,
+      "min_cohesion": 0.5028069190644079,
+      "max_cohesion": 0.5028069190644079,
+      "modularity": 0.03452052623096631
+    },
+    "3": {
+      "avg_similarity": 0.5156786086762779,
+      "max_similarity": 0.5818912525233693,
+      "min_similarity": 0.3962924653615379
+    },
+    "4": {
+      "avg_similarity": 0.5156786086762779,
+      "max_similarity": 0.5818912525233693,
+      "min_similarity": 0.3962924653615379,
+      "num_coalitions": 1,
+      "coalition_sizes": [
+        3
+      ],
+      "avg_cohesion": 0.49447358573107464,
+      "min_cohesion": 0.49447358573107464,
+      "max_cohesion": 0.49447358573107464,
+      "modularity": 0.034999261383244704
+    },
+    "5": {
+      "avg_similarity": 0.5223452753429445,
+      "max_similarity": 0.6096690303011469,
+      "min_similarity": 0.3962924653615379
+    }
+  },
+  "churn_analysis": [
+    {
+      "from_round": 2,
+      "to_round": 4,
+      "churn_rate": 0.0,
+      "num_migrations": 0,
+      "migrations": []
+    }
+  ],
+  "avg_churn_rate": 0.0
+}

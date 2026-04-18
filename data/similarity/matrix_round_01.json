@@ -1,16 +1,24 @@
 {
   "round": 1,
   "agent_names": [
+    "TechAnalystAlex",
     "CreativeStoryteller_Sam",
-    "SkepticalDebater_Morgan"
+    "EmpathyAdvocate_Riley"
   ],
   "matrix": [
     [
       1.0,
-      0.6433363366555573
+      0.3539627975273046,
+      0.36987022869782055
     ],
     [
-      0.6433363366555573,
+      0.3539627975273046,
+      1.0,
+      0.7011677588984673
+    ],
+    [
+      0.36987022869782055,
+      0.7011677588984673,
       1.0
     ]
   ]

@@ -1,0 +1,36 @@
+{
+  "similarity_analysis": {
+    "pre_coalition": {
+      "avg_similarity": 0.6433363366555573,
+      "std_similarity": 0.0,
+      "min_similarity": 0.6433363366555573,
+      "max_similarity": 0.6433363366555573,
+      "rounds": [
+        1
+      ]
+    },
+    "post_coalition": {
+      "within_coalition_avg": 0.43680734363055024,
+      "between_coalition_avg": 0.43680734363055024,
+      "separation_score": 0.0,
+      "improvement_pct": 0.0
+    },
+    "within_vs_between": {
+      "round_2": {
+        "between_coalition": {
+          "avg": 0.43680734363055024,
+          "std": 0.0,
+          "count": 1
+        }
+      },
+      "round_4": {
+        "within_coalition": {
+          "avg": 0.43680734363055024,
+          "std": 0.0,
+          "count": 1
+        }
+      }
+    }
+  },
+  "engagement_analysis": {}
+}
